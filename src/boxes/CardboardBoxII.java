@@ -16,7 +16,7 @@ public class CardboardBoxII extends CardboardBox{
     }
 
     @Override
-    protected double calculateTotalPrice() {
+    public double calculateTotalPrice() {
         double area = calculateArea();
         double pricePerM = calculatePricePerM();
         
@@ -32,7 +32,7 @@ public class CardboardBoxII extends CardboardBox{
     }
 
     @Override
-    protected String[] getAll() {
+    public String[] getAll() {
         String[] all = new String[9];
         all[0] = "1";
         all[1] = String.valueOf(quantity);

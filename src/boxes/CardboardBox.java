@@ -61,7 +61,7 @@ public abstract class CardboardBox {
         return price;
     }
     
-    protected abstract double calculateTotalPrice();
+    public abstract double calculateTotalPrice();
     
-    protected abstract String[] getAll();
+    public abstract String[] getAll();
 }

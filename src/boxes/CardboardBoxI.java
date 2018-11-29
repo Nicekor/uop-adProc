@@ -16,7 +16,7 @@ public class CardboardBoxI extends CardboardBox{
     }
 
     @Override
-    protected double calculateTotalPrice() {
+    public double calculateTotalPrice() {
         double area = calculateArea();
         double pricePerM = calculatePricePerM();
         double totalPrice = area * pricePerM;

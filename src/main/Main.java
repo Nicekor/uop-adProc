@@ -5,6 +5,7 @@
  */
 package main;
 
+import order.Order;
 import ui.GUI;
 
 /**
@@ -12,11 +13,11 @@ import ui.GUI;
  * @author nicekor
  */
 public class Main {
-
-    /**
-     * @param args the command line arguments
-     */
+    
+    private static Order checkout;
+    
     public static void main(String[] args) {
+        checkout = new Order();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new GUI().setVisible(true);
@@ -24,4 +25,7 @@ public class Main {
         });
     }
     
+    public static Order getCheckOut() {
+        return checkout;
+    }
 }

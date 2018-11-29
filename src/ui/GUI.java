@@ -14,6 +14,8 @@ import boxes.CardboardBoxV;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JOptionPane;
+import main.Main;
+import order.Order;
 
 /**
  *
@@ -29,9 +31,14 @@ public class GUI extends javax.swing.JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         this.setSize(screenSize.width/2, screenSize.height/2);
         this.setLocationRelativeTo(null);
+        this.setMinimumSize(new Dimension(680, 367));
+        
+        
         
         // initializing components of the frame
         initComponents();
+        System.out.println("Frame widht: " + this.getSize().width); // min: 680
+        System.out.println("Frame height: " + this.getSize().height); // min: 367
     }
 
     /**
@@ -75,8 +82,12 @@ public class GUI extends javax.swing.JFrame {
         addBtn = new javax.swing.JButton();
         clearBtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        basketList = new javax.swing.JList<>();
+        basketList = new java.awt.List();
+        clearOrderBtn = new javax.swing.JButton();
+        boxDetailsBtn = new javax.swing.JButton();
+        removeBoxBtn = new javax.swing.JButton();
+        checkOutBtn = new javax.swing.JButton();
+        displayCost = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("FlexBox");
@@ -339,7 +350,7 @@ public class GUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
+                        .addGap(20, 20, 20)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -352,23 +363,71 @@ public class GUI extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Buy", jPanel1);
 
-        jScrollPane1.setViewportView(basketList);
+        clearOrderBtn.setText("Clear Order");
+        clearOrderBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearOrderBtnActionPerformed(evt);
+            }
+        });
+
+        boxDetailsBtn.setText("Box Details");
+        boxDetailsBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                boxDetailsBtnActionPerformed(evt);
+            }
+        });
+
+        removeBoxBtn.setText("Remove Box");
+        removeBoxBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeBoxBtnActionPerformed(evt);
+            }
+        });
+
+        checkOutBtn.setText("Check Out");
+        checkOutBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkOutBtnActionPerformed(evt);
+            }
+        });
+
+        displayCost.setText("Total Cost: £ 0.00");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(basketList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 6, Short.MAX_VALUE)
+                        .addComponent(clearOrderBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(boxDetailsBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(removeBoxBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(displayCost)
+                        .addGap(18, 18, 18)
+                        .addComponent(checkOutBtn)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(basketList, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(clearOrderBtn)
+                    .addComponent(boxDetailsBtn)
+                    .addComponent(removeBoxBtn)
+                    .addComponent(checkOutBtn)
+                    .addComponent(displayCost))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Basket", jPanel2);
@@ -485,6 +544,9 @@ public class GUI extends javax.swing.JFrame {
         int grade = getUserGrade(); // get grade from the user
         boolean sealableTop = getUserSealable();
 
+        System.out.println("----------------");
+        System.out.println("Box Details:");
+        System.out.println("Colour: " + colour);
         System.out.println("Colour: " + colour);
         System.out.println("Width: " + width);
         System.out.println("Length: " + length);
@@ -495,6 +557,13 @@ public class GUI extends javax.swing.JFrame {
         System.out.println("----------------");
         
         CardboardBox box = calculateCardboardBoxType(colour, quantity, height, length, width, grade, sealableTop);
+        
+        if (box == null) {
+            return;
+        }
+        Main.getCheckOut().addBox(box);
+        updateBasketList();
+        sendBoxAdded(box);
     }//GEN-LAST:event_addBtnActionPerformed
     
     private CardboardBox calculateCardboardBoxType(int colour, int quantity, double height, double length, double width, int grade, boolean sealableTop) {
@@ -511,6 +580,21 @@ public class GUI extends javax.swing.JFrame {
             return new CardboardBoxIV(quantity, width, length, height, grade, sealableTop);
         }
         return new CardboardBoxIII(quantity, width, length, height, grade, sealableTop);
+    }
+    
+    private void updateBasketList() {
+        basketList.removeAll();
+        int i = 1;
+        for (CardboardBox box : Main.getCheckOut().getBoxes()) {
+            String listEntry = "Order: " + i + " | Cost: £" + String.format("%.2f", box.calculateTotalPrice());
+            basketList.add(listEntry);
+            i++;
+        }
+        displayCost.setText("Total Cost : £" + String.format("%.2f", Main.getCheckOut().calculateTotalPrice()));
+    }
+    
+    private void sendBoxAdded(CardboardBox box) {
+        JOptionPane.showMessageDialog(this, "Box Added Costing : £" + String.format("%.2f", box.calculateTotalPrice()), "Box Added", JOptionPane.INFORMATION_MESSAGE);
     }
     
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
@@ -594,14 +678,62 @@ public class GUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_gradeComboActionPerformed
 
+    private void clearOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearOrderBtnActionPerformed
+        basketList.removeAll();
+        Main.getCheckOut().clear();
+        displayCost.setText("Total Cost : £0.00");
+    }//GEN-LAST:event_clearOrderBtnActionPerformed
+
+    private void boxDetailsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boxDetailsBtnActionPerformed
+        int index = basketList.getSelectedIndex();
+        if (index >= basketList.getItemCount() || index == -1) {
+            JOptionPane.showMessageDialog(this, "Please select the box you wish to View", "View Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        showDetails(Main.getCheckOut().getBoxes().get(index), index + 1);
+    }//GEN-LAST:event_boxDetailsBtnActionPerformed
+
+    private void removeBoxBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBoxBtnActionPerformed
+        int index = basketList.getSelectedIndex();
+        if (index >= basketList.getItemCount() || index == -1) {
+            JOptionPane.showMessageDialog(this, "Please select the box you wish to remove", "Remove Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        Main.getCheckOut().removeBox(index);
+        updateBasketList();
+    }//GEN-LAST:event_removeBoxBtnActionPerformed
+
+    private void checkOutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkOutBtnActionPerformed
+        JOptionPane.showMessageDialog(this, "Amount of boxes: " + Main.getCheckOut().getBoxes().size() + "\nTotal: £" + String.format("%.2f", Main.getCheckOut().calculateTotalPrice()), "Checkout", JOptionPane.INFORMATION_MESSAGE);
+        Main.getCheckOut().clear();
+        displayCost.setText("Total Cost : £0.00");
+        updateBasketList();
+    }//GEN-LAST:event_checkOutBtnActionPerformed
+    
+    private void showDetails(CardboardBox box, int index) {
+        String[] all = box.getAll();
+        JOptionPane.showMessageDialog(this, "Height: " + all[3]
+                + "\nWidth: " + all[2]
+                + "\nLength: " + all[4]
+                + "\nColour: " + all[0]
+                + "\nGrade: " + all[5]
+                + "\nQuantity: " + all[1]
+                + "\nReinforced Bottom: " + all[6]
+                + "\nReinforced Corners: " + all[7]
+                + "\nSealable Top: " + all[8], "Box Information | Order : " + index, JOptionPane.INFORMATION_MESSAGE);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addBtn;
-    private javax.swing.JList<String> basketList;
+    private java.awt.List basketList;
     private javax.swing.JCheckBox bottomsCheck;
+    private javax.swing.JButton boxDetailsBtn;
+    private javax.swing.JButton checkOutBtn;
     private javax.swing.JButton clearBtn;
+    private javax.swing.JButton clearOrderBtn;
     private javax.swing.ButtonGroup coloursGroup;
     private javax.swing.JCheckBox cornersCheck;
+    private javax.swing.JLabel displayCost;
     private javax.swing.JComboBox<String> gradeCombo;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -620,11 +752,11 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JRadioButton noColour;
     private javax.swing.JRadioButton oneColour;
     private javax.swing.JSpinner quantitySpinner;
+    private javax.swing.JButton removeBoxBtn;
     private javax.swing.JCheckBox sealableTopCheck;
     private javax.swing.JRadioButton twoColour;
     private javax.swing.JTextField txtHeight;
