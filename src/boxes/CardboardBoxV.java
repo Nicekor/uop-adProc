@@ -9,17 +9,21 @@ package boxes;
  *
  * @author nicekor
  */
-public class CardboardBoxI extends CardboardBox{
+public class CardboardBoxV extends CardboardBox{
 
-    public CardboardBoxI(int quantity, double width, double length, double height, int grade, boolean sealableTop) {
-        super(quantity, 0, width, length, height, grade, sealableTop);
+    public CardboardBoxV(int quantity, double width, double length, double height, int grade, boolean sealableTop) {
+        super(quantity, 2, width, length, height, grade, sealableTop);
     }
 
     @Override
     protected double calculateTotalPrice() {
         double area = calculateArea();
         double pricePerM = calculatePricePerM();
-        double totalPrice = area * pricePerM;
+        
+        double priceWithoutExtras = area * pricePerM;
+        double extras = priceWithoutExtras * (twoColourPerc + reinforcedBottomsPerc + reinforcedCornersPerc);
+        
+        double totalPrice = priceWithoutExtras + extras;
         if (sealableTop){
             double sealablePrice = totalPrice * selableTopPerc;
             totalPrice = totalPrice + sealablePrice;
@@ -28,17 +32,18 @@ public class CardboardBoxI extends CardboardBox{
     }
 
     @Override
-    public String[] getAll() {
+    protected String[] getAll() {
         String[] all = new String[9];
-        all[0] = "0";
+        all[0] = "2";
         all[1] = String.valueOf(quantity);
         all[2] = String.valueOf(width);
         all[3] = String.valueOf(height);
         all[4] = String.valueOf(length);
         all[5] = String.valueOf(grade);
-        all[6] = "false";
-        all[7] = "false";
+        all[6] = "true";
+        all[7] = "true";
         all[8] = String.valueOf(sealableTop);
         return all;
     }
+    
 }

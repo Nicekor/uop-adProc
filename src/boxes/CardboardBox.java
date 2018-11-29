@@ -22,7 +22,7 @@ public abstract class CardboardBox {
     protected final double reinforcedCornersPerc = 0.12;
     protected final double selableTopPerc = 0.10;
     
-    public CardboardBox(int quantity, int colourPrint, double width, double length, double height, int grade, boolean sealableTop, boolean reinforcedBottoms, boolean reinforcedCorners){
+    public CardboardBox(int quantity, int colourPrint, double width, double length, double height, int grade, boolean sealableTop){
         this.quantity = quantity;
         this.colourPrint = colourPrint;
         this.width = width;
@@ -30,8 +30,6 @@ public abstract class CardboardBox {
         this.height = height;
         this.grade = grade;
         this.sealableTop = sealableTop;
-        this.reinforcedBottoms = reinforcedBottoms;
-        this.reinforcedCorners = reinforcedCorners;
     }
     
     protected double calculateArea(){
@@ -64,4 +62,6 @@ public abstract class CardboardBox {
     }
     
     protected abstract double calculateTotalPrice();
+    
+    protected abstract String[] getAll();
 }

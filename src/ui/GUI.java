@@ -5,10 +5,14 @@
  */
 package ui;
 
+import boxes.CardboardBox;
+import boxes.CardboardBoxI;
+import boxes.CardboardBoxII;
+import boxes.CardboardBoxIII;
+import boxes.CardboardBoxIV;
+import boxes.CardboardBoxV;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -143,6 +147,7 @@ public class GUI extends javax.swing.JFrame {
 
         coloursGroup.add(oneColour);
         oneColour.setText("1");
+        oneColour.setEnabled(false);
         oneColour.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 oneColourActionPerformed(evt);
@@ -159,6 +164,7 @@ public class GUI extends javax.swing.JFrame {
 
         coloursGroup.add(twoColour);
         twoColour.setText("2");
+        twoColour.setEnabled(false);
         twoColour.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 twoColourActionPerformed(evt);
@@ -195,11 +201,14 @@ public class GUI extends javax.swing.JFrame {
 
         jLabel9.setText("Corners");
 
+        bottomsCheck.setEnabled(false);
         bottomsCheck.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bottomsCheckActionPerformed(evt);
             }
         });
+
+        cornersCheck.setEnabled(false);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -239,6 +248,11 @@ public class GUI extends javax.swing.JFrame {
         jLabel11.setText("Sealable Top:");
 
         gradeCombo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5" }));
+        gradeCombo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gradeComboActionPerformed(evt);
+            }
+        });
 
         quantitySpinner.setModel(new javax.swing.SpinnerNumberModel(1, 1, 100, 1));
 
@@ -406,9 +420,9 @@ public class GUI extends javax.swing.JFrame {
     
     private double[] getUserSizes(){
         double[] sizes = new double[3]; // sizes[0] = width; sizes[1] = length; sizes[2] = height;
+        double[] noSizes = new double[0]; // to return an empty array if some error occurs
         final double MIN_SIZE = 0.1;
         final double MAX_SIZE = 5;
-        
         try{
             sizes[0] = Double.parseDouble(txtWidth.getText());
             sizes[1] = Double.parseDouble(txtLength.getText());
@@ -417,11 +431,13 @@ public class GUI extends javax.swing.JFrame {
             for (int i = 0; i < sizes.length; i++){
                 if (sizes[i] < MIN_SIZE || sizes[i] > MAX_SIZE){
                     failedToPurchase("Please enter a size between 0.1 and 5 meters.");
+                    return noSizes;
                 }
             }
         }
         catch (NumberFormatException nfe){
             failedToPurchase("Sizes must be a number.");
+            return noSizes;
         }
         return sizes;
     }
@@ -436,31 +452,67 @@ public class GUI extends javax.swing.JFrame {
         return grade;
     }
     
-    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
-        if(txtWidth.getText().equals("") || txtHeight.getText().equals("") || txtLength.getText().equals("") //check if there are empty required fields
+    private boolean getUserSealable(){
+        return sealableTopCheck.isSelected();
+    }
+    
+    private boolean emptyFields(){ // check if there are empty required fields
+        if(txtWidth.getText().equals("") || txtHeight.getText().equals("") || txtLength.getText().equals("")
             || (!noColour.isSelected() && !oneColour.isSelected() && !twoColour.isSelected())){
             failedToPurchase("Please fill all the required fields! (*)");
+            return true;
+        }
+        return false;
+    }
+    
+    private void addBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addBtnActionPerformed
+        boolean emptyFields = emptyFields();
+        if(emptyFields == true){ // to quit the method
+            return;
+        }
+            
+        int colour = getUserColour(); // get colour from the user
+        
+        double[] sizes = getUserSizes(); // get sizes of the box as an array from the user
+        if(sizes.length == 0){ // to quit the method
             return;
         }
         
-        int colour = getUserColour(); // get colour from the user
-        double[] sizes = getUserSizes(); // get sizes of the box as an array from the user
         double width = sizes[0]; // declare each size of the array in a variable referencing to the side
         double length = sizes[1];
         double height = sizes[2];
         int quantity = getUserQuantity(); //get quantity from the user
-        int grade = getUserGrade();
-        
-        
+        int grade = getUserGrade(); // get grade from the user
+        boolean sealableTop = getUserSealable();
+
         System.out.println("Colour: " + colour);
         System.out.println("Width: " + width);
         System.out.println("Length: " + length);
         System.out.println("Height: " + height);
         System.out.println("Quantity: " + quantity);
         System.out.println("Grade: " + grade);
+        System.out.println("Sealable Top: " + sealableTop);
         System.out.println("----------------");
+        
+        CardboardBox box = calculateCardboardBoxType(colour, quantity, height, length, width, grade, sealableTop);
     }//GEN-LAST:event_addBtnActionPerformed
-
+    
+    private CardboardBox calculateCardboardBoxType(int colour, int quantity, double height, double length, double width, int grade, boolean sealableTop) {
+        if (colour == 0) {
+            return new CardboardBoxI(quantity, width, length, height, grade, sealableTop);
+        } else if (colour == 1) {
+            return new CardboardBoxII(quantity, width, length, height, grade, sealableTop);
+        }
+        //2
+        if (bottomsCheck.isSelected()) {//IV
+            if (cornersCheck.isSelected()) { //V
+                return new CardboardBoxV(quantity, width, length, height, grade, sealableTop);
+            }
+            return new CardboardBoxIV(quantity, width, length, height, grade, sealableTop);
+        }
+        return new CardboardBoxIII(quantity, width, length, height, grade, sealableTop);
+    }
+    
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
         txtWidth.setText("");
         txtLength.setText("");
@@ -489,6 +541,58 @@ public class GUI extends javax.swing.JFrame {
     private void twoColourActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_twoColourActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_twoColourActionPerformed
+
+    private void gradeComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gradeComboActionPerformed
+        int grade = getUserGrade();
+        if (grade == 1) {
+            noColour.setEnabled(true);
+            oneColour.setEnabled(false);
+            twoColour.setEnabled(false);
+            
+            coloursGroup.clearSelection();
+            
+            bottomsCheck.setEnabled(false);
+            cornersCheck.setEnabled(false);
+            
+            bottomsCheck.setSelected(false);
+            cornersCheck.setSelected(false);
+        } else if (grade == 2) {
+            noColour.setEnabled(true);
+            oneColour.setEnabled(true);
+            twoColour.setEnabled(true);
+            
+            bottomsCheck.setEnabled(true);
+            cornersCheck.setEnabled(false);
+            
+            cornersCheck.setSelected(false);
+            
+        } else if (grade == 3){
+            noColour.setEnabled(true);
+            oneColour.setEnabled(true);
+            twoColour.setEnabled(true);
+            
+            bottomsCheck.setEnabled(true);
+            cornersCheck.setEnabled(true);
+        } else if (grade == 4) {
+            noColour.setEnabled(false);
+            oneColour.setEnabled(true);
+            twoColour.setEnabled(true);
+
+            coloursGroup.clearSelection();
+            
+            bottomsCheck.setEnabled(true);
+            cornersCheck.setEnabled(true);
+        } else {
+            noColour.setEnabled(false);
+            oneColour.setEnabled(false);
+            twoColour.setEnabled(true);
+
+            coloursGroup.clearSelection();
+            
+            bottomsCheck.setEnabled(true);
+            cornersCheck.setEnabled(true);
+        }
+    }//GEN-LAST:event_gradeComboActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
