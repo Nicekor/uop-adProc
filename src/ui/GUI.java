@@ -14,7 +14,6 @@ import boxes.CardboardBoxV;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JOptionPane;
-import main.Main;
 import order.Order;
 
 /**
@@ -23,6 +22,7 @@ import order.Order;
  */
 public class GUI extends javax.swing.JFrame {
 
+    private Order checkout = new Order();
     /**
      * Creates new form GUI
      */
@@ -547,22 +547,21 @@ public class GUI extends javax.swing.JFrame {
         System.out.println("----------------");
         System.out.println("Box Details:");
         System.out.println("Colour: " + colour);
-        System.out.println("Colour: " + colour);
         System.out.println("Width: " + width);
         System.out.println("Length: " + length);
         System.out.println("Height: " + height);
         System.out.println("Quantity: " + quantity);
         System.out.println("Grade: " + grade);
         System.out.println("Sealable Top: " + sealableTop);
-        System.out.println("----------------");
         
         CardboardBox box = calculateCardboardBoxType(colour, quantity, height, length, width, grade, sealableTop);
         
         if (box == null) {
             return;
         }
-        Main.getCheckOut().addBox(box);
-        updateBasketList();
+        
+        checkout.addBox(box);
+        updateBasketList(checkout);
         sendBoxAdded(box);
     }//GEN-LAST:event_addBtnActionPerformed
     
@@ -582,15 +581,15 @@ public class GUI extends javax.swing.JFrame {
         return new CardboardBoxIII(quantity, width, length, height, grade, sealableTop);
     }
     
-    private void updateBasketList() {
+    private void updateBasketList(Order checkout){
         basketList.removeAll();
         int i = 1;
-        for (CardboardBox box : Main.getCheckOut().getBoxes()) {
+        for (CardboardBox box : checkout.getBoxes()) {
             String listEntry = "Order: " + i + " | Cost: £" + String.format("%.2f", box.calculateTotalPrice());
             basketList.add(listEntry);
             i++;
         }
-        displayCost.setText("Total Cost : £" + String.format("%.2f", Main.getCheckOut().calculateTotalPrice()));
+        displayCost.setText("Total Cost : £" + String.format("%.2f", checkout.calculateTotalPrice()));
     }
     
     private void sendBoxAdded(CardboardBox box) {
@@ -680,7 +679,7 @@ public class GUI extends javax.swing.JFrame {
 
     private void clearOrderBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearOrderBtnActionPerformed
         basketList.removeAll();
-        Main.getCheckOut().clear();
+        checkout.clear();
         displayCost.setText("Total Cost : £0.00");
     }//GEN-LAST:event_clearOrderBtnActionPerformed
 
@@ -690,7 +689,7 @@ public class GUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please select the box you wish to View", "View Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        showDetails(Main.getCheckOut().getBoxes().get(index), index + 1);
+        showDetails(checkout.getBoxes().get(index), index + 1);
     }//GEN-LAST:event_boxDetailsBtnActionPerformed
 
     private void removeBoxBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBoxBtnActionPerformed
@@ -699,15 +698,15 @@ public class GUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Please select the box you wish to remove", "Remove Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        Main.getCheckOut().removeBox(index);
-        updateBasketList();
+        checkout.removeBox(index);
+        updateBasketList(checkout);
     }//GEN-LAST:event_removeBoxBtnActionPerformed
 
     private void checkOutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkOutBtnActionPerformed
-        JOptionPane.showMessageDialog(this, "Amount of boxes: " + Main.getCheckOut().getBoxes().size() + "\nTotal: £" + String.format("%.2f", Main.getCheckOut().calculateTotalPrice()), "Checkout", JOptionPane.INFORMATION_MESSAGE);
-        Main.getCheckOut().clear();
+        JOptionPane.showMessageDialog(this, "Amount of boxes: " + checkout.getBoxes().size() + "\nTotal: £" + String.format("%.2f", checkout.calculateTotalPrice()), "Checkout", JOptionPane.INFORMATION_MESSAGE);
+        checkout.clear();
         displayCost.setText("Total Cost : £0.00");
-        updateBasketList();
+        updateBasketList(checkout);
     }//GEN-LAST:event_checkOutBtnActionPerformed
     
     private void showDetails(CardboardBox box, int index) {

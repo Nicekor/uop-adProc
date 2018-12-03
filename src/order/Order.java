@@ -19,7 +19,7 @@ public class Order {
     public Order() {
         boxes = new ArrayList<CardboardBox>();
     }
-
+    
     /**
      * This method is used to add boxes to this order.
      *

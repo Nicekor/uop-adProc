@@ -5,7 +5,6 @@
  */
 package main;
 
-import order.Order;
 import ui.GUI;
 
 /**
@@ -14,18 +13,11 @@ import ui.GUI;
  */
 public class Main {
     
-    private static Order checkout;
-    
     public static void main(String[] args) {
-        checkout = new Order();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new GUI().setVisible(true);
             }
         });
-    }
-    
-    public static Order getCheckOut() {
-        return checkout;
     }
 }
