@@ -22,7 +22,7 @@ import order.Order;
  */
 public class GUI extends javax.swing.JFrame {
 
-    private Order checkout = new Order();
+    private Order checkout = new Order(); //array list for the boxes
     /**
      * Creates new form GUI
      */
@@ -614,11 +614,13 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_clearBtnActionPerformed
 
     private void noColourActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noColourActionPerformed
-        
+        bottomsCheck.setEnabled(false);
+        cornersCheck.setEnabled(false);
     }//GEN-LAST:event_noColourActionPerformed
 
     private void oneColourActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_oneColourActionPerformed
-        // TODO add your handling code here:
+        bottomsCheck.setEnabled(false);
+        cornersCheck.setEnabled(false);
     }//GEN-LAST:event_oneColourActionPerformed
 
     private void twoColourActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_twoColourActionPerformed
@@ -644,6 +646,8 @@ public class GUI extends javax.swing.JFrame {
             oneColour.setEnabled(true);
             twoColour.setEnabled(true);
             
+            coloursGroup.clearSelection();
+            
             bottomsCheck.setEnabled(true);
             cornersCheck.setEnabled(false);
             
@@ -653,6 +657,8 @@ public class GUI extends javax.swing.JFrame {
             noColour.setEnabled(true);
             oneColour.setEnabled(true);
             twoColour.setEnabled(true);
+            
+            coloursGroup.clearSelection();
             
             bottomsCheck.setEnabled(true);
             cornersCheck.setEnabled(true);
