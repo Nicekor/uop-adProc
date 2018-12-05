@@ -22,23 +22,23 @@ import order.Order;
  */
 public class GUI extends javax.swing.JFrame {
 
-    private Order checkout = new Order(); //array list for the boxes
+    private Order checkout;
     /**
      * Creates new form GUI
      */
     public GUI() {
-        // centering the frame
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setSize(screenSize.width/2, screenSize.height/2);
-        this.setLocationRelativeTo(null);
-        this.setMinimumSize(new Dimension(680, 367));
-        
-        
+        checkout = new Order(); // array list for the boxes
         
         // initializing components of the frame
         initComponents();
         System.out.println("Frame widht: " + this.getSize().width); // min: 680
         System.out.println("Frame height: " + this.getSize().height); // min: 367
+        
+        // centering the frame
+        this.setLocationRelativeTo(null);
+        
+        // seting minimum size of the frame
+        this.setMinimumSize(new Dimension(680, 367));
     }
 
     /**
@@ -220,6 +220,11 @@ public class GUI extends javax.swing.JFrame {
         });
 
         cornersCheck.setEnabled(false);
+        cornersCheck.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cornersCheckActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -453,33 +458,48 @@ public class GUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void bottomsCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bottomsCheckActionPerformed
-        // TODO add your handling code here:
+        int grade = getUserGrade();
+        int colour = getUserColour();
+        for (int i = 3; i < 6; i++){
+            if(grade == i && colour == 2 && cornersCheck.isSelected() && !bottomsCheck.isSelected()){
+                cornersCheck.setSelected(false);
+                failedToPurchase("A box with grade " + grade + " and 2 colours cannot have only reinforced corners!\n Must have both reinforced, none or only bottoms!");
+            }
+        }
     }//GEN-LAST:event_bottomsCheckActionPerformed
-
+    
+    /**
+     * This method is used to display a message when an item was failed to be added to the order.
+     *
+     * @param string The message sent about why it failed.
+     */
     private void failedToPurchase(String string){
         JOptionPane.showMessageDialog(this, string, "ERROR", JOptionPane.ERROR_MESSAGE);
         return;
     }
     
+    /**
+     * This method is used to get the colour the user has selected.
+     *
+     * @return The colour selected (will return 0 if no colour selected).
+     */
     private int getUserColour(){
-        int colour = 0;
-        
-        // colours
-        if (noColour.isSelected()){
-            colour = 0;
-        }
-        else if (oneColour.isSelected()){
-            colour = 1;
+        if (oneColour.isSelected()){
+            return 1;
         }
         else if (twoColour.isSelected()){
-            colour = 2;
+            return 2;
         }
-        return colour;
+        return 0;
     }
     
+    /**
+     * This method is used to display a message about a cardboard box being added.
+     *
+     * @return An array of sizes (0 = width, 1 = length, 2 = height), returns an empty array if nothing is entered or out of bounds.
+     */
     private double[] getUserSizes(){
         double[] sizes = new double[3]; // sizes[0] = width; sizes[1] = length; sizes[2] = height;
-        double[] noSizes = new double[0]; // to return an empty array if some error occurs
         final double MIN_SIZE = 0.1;
         final double MAX_SIZE = 5;
         try{
@@ -490,31 +510,52 @@ public class GUI extends javax.swing.JFrame {
             for (int i = 0; i < sizes.length; i++){
                 if (sizes[i] < MIN_SIZE || sizes[i] > MAX_SIZE){
                     failedToPurchase("Please enter a size between 0.1 and 5 meters.");
-                    return noSizes;
+                    return new double[0];
                 }
             }
         }
         catch (NumberFormatException nfe){
             failedToPurchase("Sizes must be a number.");
-            return noSizes;
+            return new double[0];
         }
         return sizes;
     }
     
+    /**
+     * This method is used to get the quantity the user has chosen.
+     *
+     * @return The quantity.
+     */
     private int getUserQuantity(){
         int quantity = (Integer)quantitySpinner.getValue();
         return quantity;
     }
     
+    
+    /**
+     * This method is used to check the grade the user has chosen.
+     *
+     * @return The grade.
+     */
     private int getUserGrade(){
         int grade = Integer.parseInt((String)gradeCombo.getSelectedItem());
         return grade;
     }
     
+    /**
+     * This method is used to check if the user wants a sealable top.
+     *
+     * @return If sealable top is selected.
+     */
     private boolean getUserSealable(){
         return sealableTopCheck.isSelected();
     }
     
+    /**
+     * This method is used to check if any of the fields are empty and sends a failed to add message if true
+     *
+     * @return True if there are any empty fields, false if not.
+     */
     private boolean emptyFields(){ // check if there are empty required fields
         if(txtWidth.getText().equals("") || txtHeight.getText().equals("") || txtLength.getText().equals("")
             || (!noColour.isSelected() && !oneColour.isSelected() && !twoColour.isSelected())){
@@ -561,10 +602,23 @@ public class GUI extends javax.swing.JFrame {
         }
         
         checkout.addBox(box);
-        updateBasketList(checkout);
+        updateBasketList();
         sendBoxAdded(box);
     }//GEN-LAST:event_addBtnActionPerformed
     
+    
+    /**
+     * This method is used to get a Cardboardbox type from information given.
+     *
+     * @param int The colour of the box
+     * @param quantity The quantity of boxes
+     * @param height The height of the box
+     * @param length The length of the box
+     * @param width The width of the box
+     * @param grade The grade of the box
+     * @param sealableTop If the box has a sealable top
+     * @return The type of cardboard box as the type CardboardBox.
+     */
     private CardboardBox calculateCardboardBoxType(int colour, int quantity, double height, double length, double width, int grade, boolean sealableTop) {
         if (colour == 0) {
             return new CardboardBoxI(quantity, width, length, height, grade, sealableTop);
@@ -581,11 +635,14 @@ public class GUI extends javax.swing.JFrame {
         return new CardboardBoxIII(quantity, width, length, height, grade, sealableTop);
     }
     
-    private void updateBasketList(Order checkout){
+    /**
+     * This method is used to update the list in with the updated order.
+     */
+    private void updateBasketList(){
         basketList.removeAll();
         int i = 1;
         for (CardboardBox box : checkout.getBoxes()) {
-            String listEntry = "Order: " + i + " | Cost: £" + String.format("%.2f", box.calculateTotalPrice());
+            String listEntry = "Order: " + i + " | Cost: £" + String.format("%.2f", box.calculateTotalPrice()) + " | Box Type: " + box.getBoxTypeName();
             basketList.add(listEntry);
             i++;
         }
@@ -593,7 +650,7 @@ public class GUI extends javax.swing.JFrame {
     }
     
     private void sendBoxAdded(CardboardBox box) {
-        JOptionPane.showMessageDialog(this, "Box Added Costing : £" + String.format("%.2f", box.calculateTotalPrice()), "Box Added", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "Box Added! \nPrice: £" + String.format("%.2f", box.calculateTotalPrice()) + "\nBox Type: " + box.getBoxTypeName(), "Box Added", JOptionPane.INFORMATION_MESSAGE);
     }
     
     private void clearBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearBtnActionPerformed
@@ -607,7 +664,7 @@ public class GUI extends javax.swing.JFrame {
         
         sealableTopCheck.setSelected(false);
         
-        quantitySpinner.setValue(0);
+        quantitySpinner.setValue(1);
         
         bottomsCheck.setSelected(false);
         cornersCheck.setSelected(false);
@@ -624,62 +681,76 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_oneColourActionPerformed
 
     private void twoColourActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_twoColourActionPerformed
-        // TODO add your handling code here:
+        int grade = getUserGrade();
+        bottomsCheck.setEnabled(true);
+        cornersCheck.setEnabled(false);
+        if(grade == 3){
+            cornersCheck.setEnabled(true);
+        }
+        if(grade == 4){
+            cornersCheck.setEnabled(true);
+        }
+        if(grade == 5){
+            cornersCheck.setEnabled(true);
+        }
     }//GEN-LAST:event_twoColourActionPerformed
 
     private void gradeComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gradeComboActionPerformed
         int grade = getUserGrade();
-        if (grade == 1) {
-            noColour.setEnabled(true);
-            oneColour.setEnabled(false);
-            twoColour.setEnabled(false);
-            
-            coloursGroup.clearSelection();
-            
-            bottomsCheck.setEnabled(false);
-            cornersCheck.setEnabled(false);
-            
-            bottomsCheck.setSelected(false);
-            cornersCheck.setSelected(false);
-        } else if (grade == 2) {
-            noColour.setEnabled(true);
-            oneColour.setEnabled(true);
-            twoColour.setEnabled(true);
-            
-            coloursGroup.clearSelection();
-            
-            bottomsCheck.setEnabled(true);
-            cornersCheck.setEnabled(false);
-            
-            cornersCheck.setSelected(false);
-            
-        } else if (grade == 3){
-            noColour.setEnabled(true);
-            oneColour.setEnabled(true);
-            twoColour.setEnabled(true);
-            
-            coloursGroup.clearSelection();
-            
-            bottomsCheck.setEnabled(true);
-            cornersCheck.setEnabled(true);
-        } else if (grade == 4) {
-            noColour.setEnabled(false);
-            oneColour.setEnabled(true);
-            twoColour.setEnabled(true);
-
-            coloursGroup.clearSelection();
-            
-            bottomsCheck.setEnabled(true);
-            cornersCheck.setEnabled(true);
-        } else {
-            noColour.setEnabled(false);
-            oneColour.setEnabled(false);
-            twoColour.setEnabled(true);
-
-            coloursGroup.clearSelection();
-            
-            bottomsCheck.setEnabled(true);
-            cornersCheck.setEnabled(true);
+        switch (grade) {
+            case 1:
+                noColour.setEnabled(true);
+                oneColour.setEnabled(false);
+                twoColour.setEnabled(false);
+                
+                coloursGroup.clearSelection();
+                
+                bottomsCheck.setEnabled(false);
+                cornersCheck.setEnabled(false);
+                bottomsCheck.setSelected(false);
+                cornersCheck.setSelected(false);
+                break;
+            case 2:
+                noColour.setEnabled(true);
+                oneColour.setEnabled(true);
+                twoColour.setEnabled(true);
+                
+                coloursGroup.clearSelection();
+                
+                bottomsCheck.setEnabled(true);
+                cornersCheck.setEnabled(false);
+                cornersCheck.setSelected(false);
+                break;
+            case 3:
+                noColour.setEnabled(true);
+                oneColour.setEnabled(true);
+                twoColour.setEnabled(true);
+                
+                coloursGroup.clearSelection();
+                
+                bottomsCheck.setEnabled(true);
+                cornersCheck.setEnabled(true);
+                break;
+            case 4:
+                noColour.setEnabled(false);
+                oneColour.setEnabled(true);
+                twoColour.setEnabled(true);
+                
+                coloursGroup.clearSelection();
+                
+                bottomsCheck.setEnabled(true);
+                cornersCheck.setEnabled(true);
+                break;
+            default:
+                noColour.setEnabled(false);
+                oneColour.setEnabled(false);
+                twoColour.setEnabled(true);
+                
+                coloursGroup.clearSelection();
+                
+                bottomsCheck.setEnabled(true);
+                cornersCheck.setEnabled(true);
+                break;
         }
     }//GEN-LAST:event_gradeComboActionPerformed
 
@@ -705,19 +776,40 @@ public class GUI extends javax.swing.JFrame {
             return;
         }
         checkout.removeBox(index);
-        updateBasketList(checkout);
+        updateBasketList();
     }//GEN-LAST:event_removeBoxBtnActionPerformed
 
     private void checkOutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkOutBtnActionPerformed
+        if (checkout.getBoxes().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Cannot checkout with no boxes", "Checkout", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         JOptionPane.showMessageDialog(this, "Amount of boxes: " + checkout.getBoxes().size() + "\nTotal: £" + String.format("%.2f", checkout.calculateTotalPrice()), "Checkout", JOptionPane.INFORMATION_MESSAGE);
         checkout.clear();
         displayCost.setText("Total Cost : £0.00");
-        updateBasketList(checkout);
+        updateBasketList();
     }//GEN-LAST:event_checkOutBtnActionPerformed
+
+    private void cornersCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cornersCheckActionPerformed
+        int grade = getUserGrade();
+        int colour = getUserColour();
+        for (int i = 3; i < 6; i++){
+            if(grade == i && colour == 2 && cornersCheck.isSelected() && !bottomsCheck.isSelected()){
+                cornersCheck.setSelected(false);
+                failedToPurchase("A box with grade " + grade + " and 2 colours cannot have only reinforced corners!\n Must have both reinforced, none or only bottoms!");
+            }
+        }
+    }//GEN-LAST:event_cornersCheckActionPerformed
     
+    /**
+     * This method is used to display information about a box.
+     *
+     * @param box The box to show details about.
+     * @param index The index the box is within the order.
+     */
     private void showDetails(CardboardBox box, int index) {
-        String[] all = box.getAll();
-        JOptionPane.showMessageDialog(this, "Height: " + all[3]
+        String[] all = box.getAllStrings();
+        JOptionPane.showMessageDialog(this, "Type: " + box.getBoxTypeName() + "\nHeight: " + all[3]
                 + "\nWidth: " + all[2]
                 + "\nLength: " + all[4]
                 + "\nColour: " + all[0]

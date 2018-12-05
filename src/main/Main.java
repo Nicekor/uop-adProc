@@ -9,7 +9,7 @@ import ui.GUI;
 
 /**
  *
- * @author nicekor
+ * @author up861808, up864461, up876126, up861332
  */
 public class Main {
     
