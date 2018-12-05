@@ -459,6 +459,12 @@ public class GUI extends javax.swing.JFrame {
     private void bottomsCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bottomsCheckActionPerformed
         int grade = getUserGrade();
         int colour = getUserColour();
+        if (!noColour.isSelected() && !oneColour.isSelected() && !twoColour.isSelected()){
+            bottomsCheck.setSelected(false);
+            cornersCheck.setSelected(false);
+            failedToPurchase("Please choose the colours first!");
+            return;
+        }
         for (int i = 3; i < 6; i++){ // looping through the grades 3, 4 and 5
             if(grade == i && colour == 2 && cornersCheck.isSelected() && !bottomsCheck.isSelected()){
                 cornersCheck.setSelected(false);
@@ -468,7 +474,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_bottomsCheckActionPerformed
     
     /**
-     * This method is used to display a message when an item was failed to be added to the order.
+     * This method is used to display a message when an item was failed to be added to the order.z
      *
      * @param string The message sent about why it failed.
      */
@@ -672,11 +678,17 @@ public class GUI extends javax.swing.JFrame {
     private void noColourActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noColourActionPerformed
         bottomsCheck.setEnabled(false);
         cornersCheck.setEnabled(false);
+        
+        bottomsCheck.setSelected(false);
+        cornersCheck.setSelected(false);
     }//GEN-LAST:event_noColourActionPerformed
 
     private void oneColourActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_oneColourActionPerformed
         bottomsCheck.setEnabled(false);
         cornersCheck.setEnabled(false);
+        
+        bottomsCheck.setSelected(false);
+        cornersCheck.setSelected(false);
     }//GEN-LAST:event_oneColourActionPerformed
 
     private void twoColourActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_twoColourActionPerformed
@@ -692,6 +704,9 @@ public class GUI extends javax.swing.JFrame {
         if(grade == 5){
             cornersCheck.setEnabled(true);
         }
+        
+        bottomsCheck.setSelected(false);
+        cornersCheck.setSelected(false);
     }//GEN-LAST:event_twoColourActionPerformed
 
     private void gradeComboActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gradeComboActionPerformed
@@ -706,6 +721,7 @@ public class GUI extends javax.swing.JFrame {
                 
                 bottomsCheck.setEnabled(false);
                 cornersCheck.setEnabled(false);
+                
                 bottomsCheck.setSelected(false);
                 cornersCheck.setSelected(false);
                 break;
@@ -718,7 +734,9 @@ public class GUI extends javax.swing.JFrame {
                 
                 bottomsCheck.setEnabled(true);
                 cornersCheck.setEnabled(false);
+                
                 cornersCheck.setSelected(false);
+                bottomsCheck.setSelected(false);
                 break;
             case 3:
                 noColour.setEnabled(true);
@@ -729,6 +747,9 @@ public class GUI extends javax.swing.JFrame {
                 
                 bottomsCheck.setEnabled(true);
                 cornersCheck.setEnabled(true);
+                
+                bottomsCheck.setSelected(false);
+                cornersCheck.setSelected(false);
                 break;
             case 4:
                 noColour.setEnabled(false);
@@ -739,6 +760,9 @@ public class GUI extends javax.swing.JFrame {
                 
                 bottomsCheck.setEnabled(true);
                 cornersCheck.setEnabled(true);
+                
+                bottomsCheck.setSelected(false);
+                cornersCheck.setSelected(false);
                 break;
             default:
                 noColour.setEnabled(false);
@@ -749,6 +773,9 @@ public class GUI extends javax.swing.JFrame {
                 
                 bottomsCheck.setEnabled(true);
                 cornersCheck.setEnabled(true);
+                
+                bottomsCheck.setSelected(false);
+                cornersCheck.setSelected(false);
                 break;
         }
     }//GEN-LAST:event_gradeComboActionPerformed
@@ -792,6 +819,12 @@ public class GUI extends javax.swing.JFrame {
     private void cornersCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cornersCheckActionPerformed
         int grade = getUserGrade();
         int colour = getUserColour();
+        if (!noColour.isSelected() && !oneColour.isSelected() && !twoColour.isSelected()){
+            bottomsCheck.setSelected(false);
+            cornersCheck.setSelected(false);
+            failedToPurchase("Please choose the colours first!");
+            return;
+        }
         for (int i = 3; i < 6; i++){ // looping through the grades 3, 4 and 5
             if(grade == i && colour == 2 && cornersCheck.isSelected() && !bottomsCheck.isSelected()){
                 cornersCheck.setSelected(false);

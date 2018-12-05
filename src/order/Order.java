@@ -45,7 +45,7 @@ public class Order {
     /**
      * This method is used to remove boxes from this order.
      *
-     * @param Index The index of the item to remove.
+     * @param index The index of the item to remove.
      */
     public void removeBox(int index) {
         if (boxes.isEmpty()) {
