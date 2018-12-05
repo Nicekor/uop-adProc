@@ -12,13 +12,12 @@ import boxes.CardboardBoxIII;
 import boxes.CardboardBoxIV;
 import boxes.CardboardBoxV;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import javax.swing.JOptionPane;
 import order.Order;
 
 /**
  *
- * @author nicekor
+ * @author up861808, up864461, up876126, up861332
  */
 public class GUI extends javax.swing.JFrame {
 
