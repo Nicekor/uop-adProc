@@ -460,7 +460,7 @@ public class GUI extends javax.swing.JFrame {
     private void bottomsCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bottomsCheckActionPerformed
         int grade = getUserGrade();
         int colour = getUserColour();
-        for (int i = 3; i < 6; i++){
+        for (int i = 3; i < 6; i++){ // looping through the grades 3, 4 and 5
             if(grade == i && colour == 2 && cornersCheck.isSelected() && !bottomsCheck.isSelected()){
                 cornersCheck.setSelected(false);
                 failedToPurchase("A box with grade " + grade + " and 2 colours cannot have only reinforced corners!\n Must have both reinforced, none or only bottoms!");
@@ -793,7 +793,7 @@ public class GUI extends javax.swing.JFrame {
     private void cornersCheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cornersCheckActionPerformed
         int grade = getUserGrade();
         int colour = getUserColour();
-        for (int i = 3; i < 6; i++){
+        for (int i = 3; i < 6; i++){ // looping through the grades 3, 4 and 5
             if(grade == i && colour == 2 && cornersCheck.isSelected() && !bottomsCheck.isSelected()){
                 cornersCheck.setSelected(false);
                 failedToPurchase("A box with grade " + grade + " and 2 colours cannot have only reinforced corners!\n Must have both reinforced, none or only bottoms!");
